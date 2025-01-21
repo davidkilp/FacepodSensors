@@ -23,7 +23,7 @@ Solution uses the separate project .DLLS for
 
 Find the .NET GUI application, FpPowerDisplay.exe, and launch it. 
 
-![screenshot](https://github.com/davidkilp/FacepodSensors/blob/master/Facepod-SensorScreenshot)
+![screenshot](https://github.com/davidkilp/FacepodSensors/blob/master/Facepod-SensorScreenshot.jpg)
 
 Click the Start button to intitiate updates from the sensor every X-seconds (adjustable from default of 5 seconds.
 
@@ -34,11 +34,13 @@ If you wish to log the sensor data, select the File menu | Save Log as... and pi
 the data will be saved. The logged data will be written in CSV format and suitable for import into Excel, etc. in the following
 format
 
+```
 ----------------------- CSV File ------------------
 sep=,
 Date,Top Temperature(°C),CPU Temperature(°C),Bus Voltage(V),Current(A),Power(W)
 1/21/2025 3:52:38 PM,25.50,30.69,N/A,N/A,N/A
 ----------------------- CSV File ------------------
+```
 
 If the sensor is not present N/A will be displayed and output to the log.
 
