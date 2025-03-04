@@ -9,6 +9,7 @@ namespace FacepodSensors
     {
         IntPtr pTempSensor = 0;
         IntPtr pPwrSensor = 0;
+        IntPtr pComExpInfo = 0;
         bool doUpdate = false;
         Int32 updateRate = 5;    // default update: 5 seconds
         StreamWriter logFile = null;
@@ -34,6 +35,11 @@ namespace FacepodSensors
             if (!InitTempSensor())
             {
                 groupBox1.Enabled = false;
+            }
+
+            if (!InitComExpSensors())
+            {
+                groupBox4.Enabled = false;
             }
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -116,6 +122,24 @@ namespace FacepodSensors
             return true;
         }
 
+        private bool InitComExpSensors()
+        {
+            try
+            {
+                pComExpInfo = ComExpSensors.FpBoardInfo_Instantiate();
+                buttonStart.Enabled = true;
+                UpdateReadings();
+                //ComExpSensors.FpBoardInfo_Destroy(pComExpInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("COM-Express hardware not detected.\n" + ex.Message);
+                labelState.Text = "COM-Express hardware not detected.";
+                buttonStart.Enabled = false;
+                return false;
+            }
+            return true;
+        }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)
         {
@@ -200,10 +224,10 @@ namespace FacepodSensors
             if (pTempSensor != 0)
             {
                 double temperature = TempSensors.FpTS_getTemperature(pTempSensor, TempSensors.TEMP_SENSOR.TOP);
-                labelTTop.Text = temperature.ToString("0.00");
+                labelTTop.Text = temperature.ToString("0.0");
 
                 temperature = TempSensors.FpTS_getTemperature(pTempSensor, TempSensors.TEMP_SENSOR.CPU);
-                labelTCPU.Text = temperature.ToString("0.00");
+                labelTCPU.Text = temperature.ToString("0.0");
             }
 
             if (pPwrSensor != 0)
@@ -213,11 +237,27 @@ namespace FacepodSensors
                 labelPower.Text = PowerSensor.FpPwr_getPower(pPwrSensor).ToString("0.00");
             }
 
+            if (pComExpInfo != 0)
+            {
+                labelCPUT.Text = ComExpSensors.FpBoardInfo_getCPU_Temp(pComExpInfo).ToString("F1");
+                labelChipsetT.Text = ComExpSensors.FpBoardInfo_getChipset_Temp(pComExpInfo).ToString("F1");
+                labelSystemT.Text = ComExpSensors.FpBoardInfo_getSystem_Temp(pComExpInfo).ToString("F1");
+                labelVbat.Text = ComExpSensors.FpBoardInfo_getVBat(pComExpInfo).ToString("F1");
+                label5V.Text = ComExpSensors.FpBoardInfo_getSys5VSB(pComExpInfo).ToString("F1");
+                label12V.Text = ComExpSensors.FpBoardInfo_getSys12V(pComExpInfo).ToString("F1");
+                labelFanRpm.Text = ComExpSensors.FpBoardInfo_getSysFanRpm(pComExpInfo).ToString();
+            }
+
             // If logging is enabled, the output a new CSV row of data
             if (logFile != null)
             {
                 string csv = DateTime.Now.ToString() + "," + labelTTop.Text + "," + labelTCPU.Text +
                                 "," + labelBusV.Text + "," + labelCurrent.Text + "," + labelPower.Text;
+                if (pComExpInfo != 0)
+                {
+                    csv += "," + labelCPUT.Text + "," + labelChipsetT.Text + "," + labelSystemT.Text +
+                            "," + labelVbat.Text + "," + label5V.Text + "," + label12V.Text + "," + labelVbat.Text;
+                }
                 logFile.WriteLine(csv);
             }
 
