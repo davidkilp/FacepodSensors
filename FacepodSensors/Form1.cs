@@ -151,7 +151,7 @@ namespace FacepodSensors
             ofd.InitialDirectory = @"C:\Temp";
             ofd.RestoreDirectory = true;
             string csvHeaderSep = "sep=,";
-            string csvHeaderTitles = "Date,Top Temperature(°C),CPU Temperature(°C),Bus Voltage(V),Current(A),Power(W)";
+            string csvHeaderTitles = "Date,Top TempSensor(°C),CPU TempSensor(°C),Bus Voltage(V),Current(A),Power(W),CPU(°C),Chipset(°C),System(°C),Vbatt,5V,12V,Fan(RPM)";
             string selectedPath = "";
             bool addCSVheader = false;
 
@@ -256,7 +256,7 @@ namespace FacepodSensors
                 if (pComExpInfo != 0)
                 {
                     csv += "," + labelCPUT.Text + "," + labelChipsetT.Text + "," + labelSystemT.Text +
-                            "," + labelVbat.Text + "," + label5V.Text + "," + label12V.Text + "," + labelVbat.Text;
+                            "," + labelVbat.Text + "," + label5V.Text + "," + label12V.Text + "," + labelFanRpm.Text;
                 }
                 logFile.WriteLine(csv);
             }
